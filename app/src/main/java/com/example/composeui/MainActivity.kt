@@ -6,6 +6,7 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.util.Size
 import android.widget.DatePicker
 import android.widget.Toast
@@ -13,7 +14,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -36,6 +41,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
+import com.example.composeui.Data.UserInfo
 import java.util.*
 
 class MainActivity : ComponentActivity() {
@@ -44,7 +51,15 @@ class MainActivity : ComponentActivity() {
         setContent {
             // Calling the composable function
             // to display element and its contents
-            MyContent()
+            val scrollState = rememberScrollState()
+
+            Box(
+                modifier = Modifier
+                    .scrollable(state = scrollState, orientation = Orientation.Vertical)
+            ) {
+                MyContent()
+            }
+
         }
     }
 }
@@ -150,7 +165,10 @@ fun MyContent(){
 
         OutlinedTextField(
             value = inputvalue1.value,
-            onValueChange = { inputvalue1.value = it},
+            onValueChange = {
+                inputvalue1.value = it
+                Log.d("fdhfd",it.text)
+                            },
             label = { Text(text = "Phone Number") },
             placeholder = { Text(text = "Phone Number") },
             singleLine = true,
@@ -181,8 +199,23 @@ fun MyContent(){
                 } else if (inputvalue2.value.equals("hereshailendra@gmail.com")) {
                     Toast.makeText(mContext, "Please enter valid Mail-ID", Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(mContext, "Logged Successfully!", Toast.LENGTH_SHORT).show()
-                    mContext.startActivity(Intent(mContext, SecondActivity::class.java))
+                    if (mDate.value.length!=0 && mTime.value.length!=0){
+                        val userInfo = UserInfo()
+                        userInfo.setDate(mDate.value)
+                        userInfo.setTime(mTime.value)
+                        Toast.makeText(mContext, "Logged Successfully!", Toast.LENGTH_SHORT).show()
+                        val  intent = Intent(mContext, SecondActivity::class.java);
+//                      mContext.startActivity(Intent(mContext, SecondActivity::class.java))
+                        var b = Bundle()
+                        b.putSerializable("serialzable", userInfo)
+                        intent.putExtras(b)
+                        mContext.startActivity(intent)
+//                  mContext.startActivity(Intent(mContext, SecondActivity::class.java))
+
+                    }else{
+                        Toast.makeText(mContext, "There is something issue!", Toast.LENGTH_SHORT).show()
+
+                    }
 
                 }
             },
@@ -201,19 +234,17 @@ fun MyContent(){
 
 
     Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.CenterHorizontally) {
-
         // On button click, TimePicker is
         // displayed, user can select a time
-        Button(onClick = { mTimePickerDialog.show() }, colors = ButtonDefaults.buttonColors(backgroundColor = Color(
-            0xFF929097
-        )
-        )) {
+        //, enabled = false
+        Button(onClick = { mTimePickerDialog.show() }, colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF929097))) {
             Text(
                 text = "Open Time Picker",
                 color = Color.White,
                 modifier = Modifier
                            .padding(5.dp)
             )
+
         }
 
         // Add a spacer of 100dp
@@ -227,8 +258,8 @@ fun MyContent(){
 
 // For displaying preview in
 // the Android Studio IDE emulator
-@Preview(showBackground = true)
+@Preview(showBackground = true, showSystemUi = true, widthDp = 400, heightDp = 700)
 @Composable
-fun DefaultPreview() {
+private fun DefaultPreview() {
     MyContent()
 }
