@@ -199,6 +199,7 @@ fun MyContent(){
                 } else if (inputvalue2.value.equals("hereshailendra@gmail.com")) {
                     Toast.makeText(mContext, "Please enter valid Mail-ID", Toast.LENGTH_SHORT).show()
                 } else {
+                    Log.d("gghfghghg",mDate.value+" "+mTime.value)
                     if (mDate.value.length!=0 && mTime.value.length!=0){
                         val userInfo = UserInfo()
                         userInfo.setDate(mDate.value)

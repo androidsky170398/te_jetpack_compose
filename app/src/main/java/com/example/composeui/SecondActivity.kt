@@ -18,17 +18,24 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.composeui.Data.UserInfo
 import com.example.composeui.Utils.Constants
 
 
 import kotlinx.coroutines.launch
 
 class SecondActivity : ComponentActivity() {
+    private var userInfo: UserInfo? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            AppMainScreen()
+            userInfo = intent.getSerializableExtra("serialzable") as UserInfo?
+            val date: String = userInfo?.getDate().toString()
+            val time: String = userInfo?.getTime().toString()
+            AppMainScreen(date,time)
 
+//            tvData.text = "Your entered name is $name number is $phone"
 
 //    val navController = rememberNavController()
 ////
@@ -49,7 +56,7 @@ class SecondActivity : ComponentActivity() {
 }
 
 @Composable
-fun AppMainScreen() {
+fun AppMainScreen(date:String,time:String) {
     val navController = rememberNavController()
     Surface(color = MaterialTheme.colors.background) {
         val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -81,21 +88,21 @@ fun AppMainScreen() {
                 startDestination = DrawerScreens.Home.route
             ) {
                 composable(DrawerScreens.Home.route) {
-                    Home(
+                    Home(date,time,
                         openDrawer = {
                             openDrawer()
                         }
                     )
                 }
                 composable(DrawerScreens.Account.route) {
-                    Account(
+                    Account(date,time,
                         openDrawer = {
                             openDrawer()
                         }
                     )
                 }
                 composable(DrawerScreens.Help.route) {
-                    Help(
+                    Help(date,time,
                         navController = navController
                     )
                 }
@@ -199,8 +206,8 @@ fun Greeting(name: String) {
 //        Greeting("Android")
 //    }
 //}
-@Preview(showBackground = true)
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun DefaultPreview1() {
-    AppMainScreen()
+    AppMainScreen("","")
 }

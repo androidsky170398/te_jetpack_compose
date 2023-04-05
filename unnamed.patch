@@ -1,0 +1,169 @@
+Index: app/src/main/java/com/example/composeui/UIComponents.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/composeui/UIComponents.kt b/app/src/main/java/com/example/composeui/UIComponents.kt
+--- a/app/src/main/java/com/example/composeui/UIComponents.kt	(revision da431b8825bf5fb7b2ee49d2178b74a695ed61cd)
++++ b/app/src/main/java/com/example/composeui/UIComponents.kt	(date 1680714425269)
+@@ -3,6 +3,7 @@
+ import androidx.compose.material.*
+ import androidx.compose.material.MaterialTheme.colors
+ import androidx.compose.runtime.Composable
++import androidx.compose.ui.Modifier
+ import androidx.compose.ui.graphics.Color
+ import androidx.compose.ui.graphics.vector.ImageVector
+ 
+@@ -11,7 +12,8 @@
+     TopAppBar(
+         title = {
+             Text(
+-                text = title
++                text = title,
++                color = Color.White
+             )
+         },
+         navigationIcon = {
+Index: app/src/main/java/com/example/composeui/MainActivity.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/composeui/MainActivity.kt b/app/src/main/java/com/example/composeui/MainActivity.kt
+--- a/app/src/main/java/com/example/composeui/MainActivity.kt	(revision da431b8825bf5fb7b2ee49d2178b74a695ed61cd)
++++ b/app/src/main/java/com/example/composeui/MainActivity.kt	(date 1680721470459)
+@@ -199,6 +199,7 @@
+                 } else if (inputvalue2.value.equals("hereshailendra@gmail.com")) {
+                     Toast.makeText(mContext, "Please enter valid Mail-ID", Toast.LENGTH_SHORT).show()
+                 } else {
++                    Log.d("gghfghghg",mDate.value+" "+mTime.value)
+                     if (mDate.value.length!=0 && mTime.value.length!=0){
+                         val userInfo = UserInfo()
+                         userInfo.setDate(mDate.value)
+Index: app/src/main/java/com/example/composeui/Screens.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/composeui/Screens.kt b/app/src/main/java/com/example/composeui/Screens.kt
+--- a/app/src/main/java/com/example/composeui/Screens.kt	(revision da431b8825bf5fb7b2ee49d2178b74a695ed61cd)
++++ b/app/src/main/java/com/example/composeui/Screens.kt	(date 1680721648007)
+@@ -15,10 +15,10 @@
+ import com.walnash.navigationdrawer.TopBar
+ 
+ @Composable
+-fun Home(openDrawer: () -> Unit) {
++fun Home(date:String,time:String,openDrawer: () -> Unit) {
+     Column(modifier = Modifier.fillMaxSize()) {
+         TopBar(
+-            title = "Home",
++            title = "Home "+"Login:"+" "+date+"  "+time,
+             buttonIcon = Icons.Filled.Menu,
+             onButtonClicked = { openDrawer() }
+         )
+@@ -32,10 +32,10 @@
+ }
+ 
+ @Composable
+-fun Account(openDrawer: () -> Unit) {
++fun Account(date:String,time:String,openDrawer: () -> Unit) {
+     Column(modifier = Modifier.fillMaxSize()) {
+         TopBar(
+-            title = "Account",
++            title = "Account "+"Login:"+" "+date+"  "+time,
+             buttonIcon = Icons.Filled.Menu,
+             onButtonClicked = { openDrawer() }
+         )
+@@ -49,10 +49,10 @@
+ }
+ 
+ @Composable
+-fun Help(navController: NavController) {
++fun Help(date:String,time:String,navController: NavController) {
+     Column(modifier = Modifier.fillMaxSize()) {
+         TopBar(
+-            title = "Help",
++            title = "Help "+"Login:"+" "+date+"  "+time,
+             buttonIcon = Icons.Filled.ArrowBack,
+             onButtonClicked = { navController.popBackStack() }
+         )
+Index: app/src/main/java/com/example/composeui/SecondActivity.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/composeui/SecondActivity.kt b/app/src/main/java/com/example/composeui/SecondActivity.kt
+--- a/app/src/main/java/com/example/composeui/SecondActivity.kt	(revision da431b8825bf5fb7b2ee49d2178b74a695ed61cd)
++++ b/app/src/main/java/com/example/composeui/SecondActivity.kt	(date 1680721155438)
+@@ -18,17 +18,24 @@
+ import androidx.navigation.compose.composable
+ import androidx.navigation.compose.currentBackStackEntryAsState
+ import androidx.navigation.compose.rememberNavController
++import com.example.composeui.Data.UserInfo
+ import com.example.composeui.Utils.Constants
+ 
+ 
+ import kotlinx.coroutines.launch
+ 
+ class SecondActivity : ComponentActivity() {
++    private var userInfo: UserInfo? = null
++
+     override fun onCreate(savedInstanceState: Bundle?) {
+         super.onCreate(savedInstanceState)
+         setContent {
+-            AppMainScreen()
++            userInfo = intent.getSerializableExtra("serialzable") as UserInfo?
++            val date: String = userInfo?.getDate().toString()
++            val time: String = userInfo?.getTime().toString()
++            AppMainScreen(date,time)
+ 
++//            tvData.text = "Your entered name is $name number is $phone"
+ 
+ //    val navController = rememberNavController()
+ ////
+@@ -49,7 +56,7 @@
+ }
+ 
+ @Composable
+-fun AppMainScreen() {
++fun AppMainScreen(date:String,time:String) {
+     val navController = rememberNavController()
+     Surface(color = MaterialTheme.colors.background) {
+         val drawerState = rememberDrawerState(DrawerValue.Closed)
+@@ -81,21 +88,21 @@
+                 startDestination = DrawerScreens.Home.route
+             ) {
+                 composable(DrawerScreens.Home.route) {
+-                    Home(
++                    Home(date,time,
+                         openDrawer = {
+                             openDrawer()
+                         }
+                     )
+                 }
+                 composable(DrawerScreens.Account.route) {
+-                    Account(
++                    Account(date,time,
+                         openDrawer = {
+                             openDrawer()
+                         }
+                     )
+                 }
+                 composable(DrawerScreens.Help.route) {
+-                    Help(
++                    Help(date,time,
+                         navController = navController
+                     )
+                 }
+@@ -199,8 +206,8 @@
+ //        Greeting("Android")
+ //    }
+ //}
+-@Preview(showBackground = true)
++@Preview(showBackground = true, showSystemUi = true)
+ @Composable
+ fun DefaultPreview1() {
+-    AppMainScreen()
++    AppMainScreen("","")
+ }
+\ No newline at end of file

@@ -15,10 +15,10 @@ import androidx.navigation.NavController
 import com.walnash.navigationdrawer.TopBar
 
 @Composable
-fun Home(openDrawer: () -> Unit) {
+fun Home(date:String,time:String,openDrawer: () -> Unit) {
     Column(modifier = Modifier.fillMaxSize()) {
         TopBar(
-            title = "Home",
+            title = "Home "+"Login:"+" "+date+"  "+time,
             buttonIcon = Icons.Filled.Menu,
             onButtonClicked = { openDrawer() }
         )
@@ -32,10 +32,10 @@ fun Home(openDrawer: () -> Unit) {
 }
 
 @Composable
-fun Account(openDrawer: () -> Unit) {
+fun Account(date:String,time:String,openDrawer: () -> Unit) {
     Column(modifier = Modifier.fillMaxSize()) {
         TopBar(
-            title = "Account",
+            title = "Account "+"Login:"+" "+date+"  "+time,
             buttonIcon = Icons.Filled.Menu,
             onButtonClicked = { openDrawer() }
         )
@@ -49,10 +49,10 @@ fun Account(openDrawer: () -> Unit) {
 }
 
 @Composable
-fun Help(navController: NavController) {
+fun Help(date:String,time:String,navController: NavController) {
     Column(modifier = Modifier.fillMaxSize()) {
         TopBar(
-            title = "Help",
+            title = "Help "+"Login:"+" "+date+"  "+time,
             buttonIcon = Icons.Filled.ArrowBack,
             onButtonClicked = { navController.popBackStack() }
         )
